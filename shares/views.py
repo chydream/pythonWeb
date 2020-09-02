@@ -88,10 +88,10 @@ class Shares_list(View):
         industry = request.GET.get('industry', '')
         queryset = Shares.objects.filter(industry=industry)
         shares_list = []
-        print(queryset)
+        # print(queryset)
         for item in queryset:
             shares_list.append({
-                'code': item.industry,
+                'code': item.code,
                 'code_name': item.code_name,
                 'uid': item.uid,
                 'created_at': item.created_at,
