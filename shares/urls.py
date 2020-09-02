@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from shares import views
+app_name = 'shares'
 
 urlpatterns = [
     url(r'^category$', views.Shares_category.as_view(), name='Shares_category'),

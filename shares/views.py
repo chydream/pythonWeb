@@ -48,7 +48,7 @@ class Shares_category_export(View):
             shares_cate_list.append({
                 'industry': index,
                 'industryClassification': '申万一级行业',
-                'count': row['count']
+                'count': float(row['count'])
             })
         bs.logout()
         return JsonResponse(shares_cate_list, safe=False)
