@@ -38,3 +38,24 @@ class Shares(models.Model):
 
     def __str__(self):
         return self.code_name
+
+
+class SharesDetail(models.Model):
+    date = models.DateTimeField('交易所行情日期')
+    code = models.CharField('股票代码', max_length=32, unique=True)
+    open = models.CharField('开盘价', max_length=128)
+    close = models.CharField('收盘价', max_length=128)
+    volume = models.CharField('成交量', max_length=128)
+    turn = models.CharField('换手率', max_length=128)
+    pctChg = models.CharField('涨跌幅', max_length=1280)
+    peTTM = models.CharField('滚动市盈率', max_length=128)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    updated_at = models.DateTimeField('更新时间', auto_now_add=True)
+
+    class Meta:
+        db_table = 'shares_detail'
+        verbose_name = '股票详情'
+        verbose_name_plural = '股票详情'
+
+    def __str__(self):
+        return self.pctChg

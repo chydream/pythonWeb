@@ -1,5 +1,6 @@
 import json
-
+import time
+from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -8,7 +9,7 @@ from django.views import View
 
 # from rest_framework import permissions
 # from rest_framework.views import APIView
-from shares.models import SharesCategory, Shares
+from shares.models import SharesCategory, Shares, SharesDetail
 import baostock as bs
 import pandas as pd
 import numpy as np
@@ -99,3 +100,27 @@ class Shares_list(View):
                 'industry': item.industry
             })
         return JsonResponse(shares_list, safe=False)
+
+
+class Shares_detail_export(View):
+    def get(self, request, *args, **kwargs):
+        industry = request.GET.get('industry', '无')
+        start = request.GET.get('start', '2020-01-01')
+        queryset = Shares.objects.filter(industry=industry)
+        today = datetime.now().date()
+        lg = bs.login()
+        for item in queryset:
+            rs = bs.query_history_k_data_plus(item.code,
+                                              'date, open, close, volume, turn, pctChg, peTTM, code',
+                                              start_date=str(start),
+                                              end_date=str(today),
+                                              frequency='d', adjustflag='3')
+            data_list = []
+            while (rs.error_code == '0') & rs.next():
+                row = rs.get_row_data()
+                shares_detail_row = SharesDetail(date=row[0], open=row[1], close=row[2], volume=row[3], turn=row[4], pctChg=row[5], peTTM=row[6], code=row[7])
+                data_list.append(shares_detail_row)
+                time.sleep(1)
+            SharesDetail.objects.bulk_create(data_list)
+        bs.logout()
+        return JsonResponse([], safe=False)
