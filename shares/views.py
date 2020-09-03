@@ -9,6 +9,8 @@ from django.views import View
 
 # from rest_framework import permissions
 # from rest_framework.views import APIView
+import requests
+
 from shares.models import SharesCategory, Shares, SharesDetail
 import baostock as bs
 import pandas as pd
@@ -124,3 +126,15 @@ class Shares_detail_export(View):
             SharesDetail.objects.bulk_create(data_list)
         bs.logout()
         return JsonResponse([], safe=False)
+
+
+class Shares_news(View):
+    def get(self, request, *args, **kwargs):
+        url = 'http://v.juhe.cn/toutiao/index'
+        data = {
+            "type": 'caijing',
+            "key": '92520cdd49ce530e3daa27c8fc7b7c46'
+        }
+        r = requests.get(url, params=data)
+        rs = r.json()
+        return rs

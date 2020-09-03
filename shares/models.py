@@ -59,3 +59,4 @@ class SharesDetail(models.Model):
 
     def __str__(self):
         return self.pctChg
+
