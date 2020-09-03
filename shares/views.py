@@ -137,4 +137,5 @@ class Shares_news(View):
         }
         r = requests.get(url, params=data)
         rs = r.json()
-        return rs
+        # print(rs)
+        return JsonResponse(rs, safe=False)
