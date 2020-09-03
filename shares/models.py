@@ -41,8 +41,8 @@ class Shares(models.Model):
 
 
 class SharesDetail(models.Model):
-    date = models.DateTimeField('交易所行情日期')
-    code = models.CharField('股票代码', max_length=32, unique=True)
+    date = models.CharField('交易所行情日期', max_length=128)
+    code = models.CharField('股票代码', max_length=32)
     open = models.CharField('开盘价', max_length=128)
     close = models.CharField('收盘价', max_length=128)
     volume = models.CharField('成交量', max_length=128)
