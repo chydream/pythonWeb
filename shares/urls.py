@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^list$', views.Shares_list.as_view(), name='Shares_list'),
     url(r'^detail/export$', views.Shares_detail_export.as_view(), name='Shares_detail_export'),
     url(r'^news$', views.Shares_news.as_view(), name='Shares_news'),
+    url(r'^detail$', views.Shares_detail.as_view(), name='Shares_detail'),
 ]

@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render
-
+from django.core.paginator import Paginator
 # Create your views here.
 from django.views import View
 
@@ -139,3 +139,33 @@ class Shares_news(View):
         rs = r.json()
         # print(rs)
         return JsonResponse(rs, safe=False)
+
+class Shares_detail(View):
+    def get(self, request, *args, **kwargs):
+        code = request.GET.get('code', '')
+        limit = request.GET.get('limit', 10)
+        page = request.GET.get('page', 1)
+        querySet = SharesDetail.objects.filter(code=code)
+        paginator = Paginator(querySet, limit)
+        pager = paginator.page(page)
+        shares_detail = []
+        for item in pager.object_list:
+            shares_detail.append({
+                'date': item.date,
+                'code': item.code,
+                'open': item.open,
+                'close': item.close,
+                'volume': item.volume,
+                'turn': item.turn,
+                'pctChg': item.pctChg,
+                'peTTM': item.peTTM,
+                'created_at': item.created_at,
+                'updated_at': item.updated_at
+            })
+        result = {
+            'code': 0,
+            'msg': '',
+            'data': shares_detail,
+            'count': pager.paginator.count
+        }
+        return JsonResponse(result, safe=False)
