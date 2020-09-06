@@ -113,14 +113,16 @@ class Shares_detail_export(View):
         lg = bs.login()
         for item in queryset:
             rs = bs.query_history_k_data_plus(item.code,
-                                              'date, open, close, volume, turn, pctChg, peTTM, code',
+                                              'date, code, open, high, low, close, volume, turn, pctChg, peTTM, isST',
                                               start_date=str(start),
                                               end_date=str(today),
                                               frequency='d', adjustflag='3')
             data_list = []
             while (rs.error_code == '0') & rs.next():
                 row = rs.get_row_data()
-                shares_detail_row = SharesDetail(date=row[0], open=row[1], close=row[2], volume=row[3], turn=row[4], pctChg=row[5], peTTM=row[6], code=row[7])
+                shares_detail_row = SharesDetail(date=row[0], code=row[1], open=row[2], high=row[3],
+                                                 low=row[4], close=row[5], volume=row[6], turn=row[7],
+                                                 pctChg=row[8], peTTM=row[9], isST=row[10])
                 data_list.append(shares_detail_row)
                 time.sleep(1)
             SharesDetail.objects.bulk_create(data_list)
@@ -154,11 +156,14 @@ class Shares_detail(View):
                 'date': item.date,
                 'code': item.code,
                 'open': item.open,
+                'high': item.high,
+                'low': item.low,
                 'close': item.close,
                 'volume': item.volume,
                 'turn': item.turn,
                 'pctChg': item.pctChg,
                 'peTTM': item.peTTM,
+                'isST': item.isST,
                 'created_at': item.created_at,
                 'updated_at': item.updated_at
             })
