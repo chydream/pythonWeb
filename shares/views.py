@@ -16,6 +16,9 @@ import baostock as bs
 import pandas as pd
 import numpy as np
 
+# from utils.tool import gen_trans_id
+
+
 def resetFloat(data):
     if data == '':
         data = 0
