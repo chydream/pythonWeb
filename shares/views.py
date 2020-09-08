@@ -1,6 +1,6 @@
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator
@@ -16,6 +16,14 @@ import baostock as bs
 import pandas as pd
 import numpy as np
 
+def resetFloat(data):
+    if data == '':
+        data = 0
+    return data
+
+def resetDate(data):
+    item = datetime.strptime(data, '%Y-%m-%d')
+    return item
 
 class Shares_category(View):
     def get(self, request, *args, **kwargs):
@@ -113,19 +121,58 @@ class Shares_detail_export(View):
         lg = bs.login()
         for item in queryset:
             rs = bs.query_history_k_data_plus(item.code,
-                                              'date, code, open, high, low, close, volume, turn, pctChg, peTTM, isST',
+                                              'date, code, open, high, low, close, volume, turn, pctChg, peTTM, isST, preclose, amount, adjustflag, tradestatus, pbMRQ, psTTM, pcfNcfTTM',
                                               start_date=str(start),
                                               end_date=str(today),
                                               frequency='d', adjustflag='3')
             data_list = []
             while (rs.error_code == '0') & rs.next():
                 row = rs.get_row_data()
-                shares_detail_row = SharesDetail(date=row[0], code=row[1], open=row[2], high=row[3],
-                                                 low=row[4], close=row[5], volume=row[6], turn=row[7],
-                                                 pctChg=row[8], peTTM=row[9], isST=row[10])
-                data_list.append(shares_detail_row)
-                time.sleep(1)
+                isHas = SharesDetail.objects.filter(date=row[0], code=row[1])
+                print(1)
+                if not isHas:
+                    shares_detail_row = SharesDetail(date=resetDate(row[0]), code=row[1], open=resetFloat(row[2]),
+                                                     high=resetFloat(row[3]),
+                                                     low=resetFloat(row[4]), close=resetFloat(row[5]),
+                                                     volume=resetFloat(row[6]), turn=resetFloat(row[7]),
+                                                     pctChg=resetFloat(row[8]), peTTM=resetFloat(row[9]), isST=row[10],
+                                                     preclose=resetFloat(row[11]),
+                                                     amount=resetFloat(row[12]), adjustflag=row[13],
+                                                     tradestatus=row[14], pbMRQ=resetFloat(row[15]),
+                                                     psTTM=resetFloat(row[16]), pcfNcfTTM=resetFloat(row[17]))
+                    data_list.append(shares_detail_row)
             SharesDetail.objects.bulk_create(data_list)
+            time.sleep(1)
+        bs.logout()
+        return JsonResponse([], safe=False)
+
+class Shares_detail_export_by_day(View):
+    def get(self, request, *args, **kwargs):
+        queryset = Shares.objects.all()
+        # today = datetime.now().date() + timedelta(days=-1)
+        today = datetime.now().date()
+        lg = bs.login()
+        data_list = []
+        for item in queryset:
+            rs = bs.query_history_k_data_plus(item.code,
+                                              'date, code, open, high, low, close, volume, turn, pctChg, peTTM, isST, preclose, amount, adjustflag, tradestatus, pbMRQ, psTTM, pcfNcfTTM',
+                                              start_date=str(today),
+                                              end_date=str(today),
+                                              frequency='d', adjustflag='3')
+            while (rs.error_code == '0') & rs.next():
+                row = rs.get_row_data()
+                isHas = SharesDetail.objects.filter(date=row[0], code=row[1])
+                if not isHas:
+                    print(1)
+                    shares_detail_row = SharesDetail(date=resetDate(row[0]), code=row[1], open=resetFloat(row[2]), high=resetFloat(row[3]),
+                                                     low=resetFloat(row[4]), close=resetFloat(row[5]), volume=resetFloat(row[6]), turn=resetFloat(row[7]),
+                                                     pctChg=resetFloat(row[8]), peTTM=resetFloat(row[9]), isST=row[10], preclose=resetFloat(row[11]),
+                                                     amount=resetFloat(row[12]), adjustflag=row[13], tradestatus=row[14], pbMRQ=resetFloat(row[15]),
+                                                     psTTM=resetFloat(row[16]), pcfNcfTTM=resetFloat(row[17]))
+                    data_list.append(shares_detail_row)
+                    shares_detail_row.save()
+            time.sleep(1)
+        # SharesDetail.objects.bulk_create(data_list)
         bs.logout()
         return JsonResponse([], safe=False)
 
@@ -164,6 +211,13 @@ class Shares_detail(View):
                 'pctChg': item.pctChg,
                 'peTTM': item.peTTM,
                 'isST': item.isST,
+                'preclose': item.preclose,
+                'amount': item.amount,
+                'adjustflag': item.adjustflag,
+                'tradestatus': item.tradestatus,
+                'pbMRQ': item.pbMRQ,
+                'psTTM': item.psTTM,
+                'pcfNcfTTM': item.pcfNcfTTM,
                 'created_at': item.created_at,
                 'updated_at': item.updated_at
             })
