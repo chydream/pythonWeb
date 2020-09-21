@@ -1,15 +1,43 @@
+# -*- coding: utf-8 -*-
+'''
+Created on 2012-7-3
+
+@author: lihao
+'''
 import top.api
 
-appkey = '31300145'
-secret = '581b6ec91f1405070bbf01ec0f79ca61'
-req = top.api.TbkItemInfoGetRequest()
-req.set_app_info(top.appinfo(appkey, secret))
 
-req.num_iids = "626134552855"
-req.platform = 1
-req.ip = "11.22.33.43"
+'''
+这边可以设置一个默认的appkey和secret，当然也可以不设置
+注意：默认的只需要设置一次就可以了
+
+'''
+top.setDefaultAppInfo("122257***", "*******")
+
+'''
+使用自定义的域名和端口（测试沙箱环境使用）
+a = top.api.UserGetRequest("gw.api.tbsandbox.com",80)
+
+使用自定义的域名（测试沙箱环境使用）
+a = top.api.UserGetRequest("gw.api.tbsandbox.com")
+
+使用默认的配置（调用线上环境）
+a = top.api.UserGetRequest()
+
+'''
+a = top.api.UserGetRequest()
+
+
+'''
+可以在运行期替换掉默认的appkey和secret的设置
+a.set_app_info(top.appinfo("appkey","*******"))
+'''
+
+a.fields="nick"
+
 try:
-  resp= req.getResponse()
-  print(resp)
-except Exception as e:
-  print(e)
+    f= a.getResponse()
+    print(f)
+except Exception,e:
+    print(e)
+    
