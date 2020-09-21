@@ -145,7 +145,7 @@ class Shares_detail_export(View):
                                                      psTTM=resetFloat(row[16]), pcfNcfTTM=resetFloat(row[17]))
                     data_list.append(shares_detail_row)
             SharesDetail.objects.bulk_create(data_list)
-            time.sleep(2)
+            # time.sleep(1)
         bs.logout()
         return JsonResponse([], safe=False)
 
