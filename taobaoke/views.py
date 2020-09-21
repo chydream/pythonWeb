@@ -6,6 +6,9 @@ from django.views import View
 import top.api
 
 class Tbk_list(View):
+    """
+    淘宝客商品详情
+    """
     appkey = '31300145'
     secret = '581b6ec91f1405070bbf01ec0f79ca61'
     def get(self, request):
@@ -23,6 +26,9 @@ class Tbk_list(View):
         return JsonResponse(resp, safe=False)
 
 class Tbk_material_search(View):
+    """
+    淘宝客物料搜索
+    """
     appkey = '31300145'
     secret = '581b6ec91f1405070bbf01ec0f79ca61'
     pid = 'mm_15446204_2034900375_110853300272'
@@ -66,6 +72,36 @@ class Tbk_material_search(View):
         # req.seller_ids = "1,2,3,4"
         # req.special_id = "2323"
         # req.relation_id = "3243"
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+class Tbk_material_optimus(View):
+    """
+    淘宝客物料精选
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        req = top.api.TbkDgOptimusMaterialRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.page_size = 20
+        req.adzone_id = 110853300272
+        req.page_no = 1
+        req.material_id = 4092
+        # req.device_value = "xxx"
+        # req.device_encrypt = "MD5"
+        # req.device_type = "IMEI"
+        # req.content_id = 323
+        # req.content_source = "xxx"
+        # req.item_id = 33243
+        # req.favorites_id = "123445"
         try:
             resp = req.getResponse()
             print(resp)
