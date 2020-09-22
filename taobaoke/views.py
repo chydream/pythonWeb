@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.views import View
 import top.api
 
-class Tbk_list(View):
+class Tbk_item_info(View):
     """
     淘宝客商品详情
     """
@@ -22,6 +22,7 @@ class Tbk_list(View):
             resp = req.getResponse()
             # print(resp)
         except Exception as e:
+            resp = []
             print(e)
         return JsonResponse(resp, safe=False)
 
@@ -74,7 +75,7 @@ class Tbk_material_search(View):
         # req.relation_id = "3243"
         try:
             resp = req.getResponse()
-            print(resp)
+            # print(resp)
         except Exception as e:
             resp = []
             print(e)
@@ -102,6 +103,263 @@ class Tbk_material_optimus(View):
         # req.content_source = "xxx"
         # req.item_id = 33243
         # req.favorites_id = "123445"
+        try:
+            resp = req.getResponse()
+            # print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+class Tbk_item_convert(View):
+    """
+    淘宝客商品链接转换
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        item_id = request.GET.get('item_id', '')
+        req = top.api.TbkItemConvertRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.fields = "num_iid,click_url"
+        req.num_iids = item_id
+        req.adzone_id = 110853300272
+        req.platform = 1
+        # req.unid = "demo"
+        # req.dx = "1"
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+class Tbk_itemid_coupon(View):
+    """
+    根据宝贝id批量查询优惠券
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        item_id = request.GET.get('item_id', '')
+        req = top.api.TbkItemidCouponGetRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.platform = 1
+        req.pid = self.pid
+        req.num_iids = item_id
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+class Tbk_coupon_convert(View):
+    """
+    单品券高效转链API
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        item_id = request.GET.get('item_id', '')
+        req = top.api.TbkCouponConvertRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.item_id = item_id
+        req.adzone_id = 110853300272
+        req.platform = 1
+        # req.external_id = "12345"
+        # req.special_id = "12345"
+        # req.relation_id = "12345"
+        # req.xid = "abcdefg"
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+class Tbk_item_word(View):
+    """
+    商品出词
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        item_id = request.GET.get('item_id', '')
+        req = top.api.TbkItemWordGetRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.item_id = item_id
+        req.adzone_id = 110853300272
+        req.count = 5
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+
+class Tbk_shop_search(View):
+    """
+    店铺搜索
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        req = top.api.TbkShopGetRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.fields = "user_id,shop_title,shop_type,seller_nick,pict_url,shop_url"
+        req.q = "女装"
+        # req.sort = "commission_rate_des"
+        # req.is_tmall = False
+        # req.start_credit = 1
+        # req.end_credit = 20
+        # req.start_commission_rate = 2000
+        # req.end_commission_rate = 123
+        # req.start_total_action = 1
+        # req.end_total_action = 100
+        # req.start_auction_count = 123
+        # req.end_auction_count = 200
+        req.platform = 1
+        req.page_no = 1
+        req.page_size = 20
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+class Tbk_shop_recommend(View):
+    """
+    店铺关联推荐
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        user_id = request.GET.get('user_id', '')
+        req = top.api.TbkShopRecommendGetRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.fields = "user_id,shop_title,shop_type,seller_nick,pict_url,shop_url"
+        req.user_id = user_id
+        req.count = 20
+        req.platform = 1
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+class Tbk_shop_convert(View):
+    """
+    店铺店铺转链
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        user_id = request.GET.get('user_id', '')
+        req = top.api.TbkShopConvertRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.fields = "user_id,click_url"
+        req.user_ids = user_id
+        req.platform = 1
+        req.adzone_id = 110853300272
+        # req.unid = "demo"
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+
+class Tbk_activity_info(View):
+    """
+    官方活动转链
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        material_id = request.GET.get('material_id', '')
+        user_id = request.GET.get('user_id', '')
+        req = top.api.TbkActivityInfoGetRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+
+        req.adzone_id = 110853300272
+        req.sub_pid = self.pid
+        # req.relation_id = 123
+        req.activity_material_id = material_id
+        # req.union_id = "demo"
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+class Tbk_tpwd_create(View):
+    """
+    官方活动转链
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        req = top.api.TbkTpwdCreateRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+        user_id = request.GET.get('user_id', '')
+        text = request.GET.get('text', '')
+        url = request.GET.get('url', '')
+        req.user_id = user_id
+        req.text = text
+        req.url = "https://uland.taobao.com/"
+        # req.logo = "https://uland.taobao.com/"
+        # req.ext = "{}"
+        try:
+            resp = req.getResponse()
+            print(resp)
+        except Exception as e:
+            resp = []
+            print(e)
+        return JsonResponse(resp, safe=False)
+
+
+class Tbk_spread(View):
+    """
+    官方活动转链
+    """
+    appkey = '31300145'
+    secret = '581b6ec91f1405070bbf01ec0f79ca61'
+    pid = 'mm_15446204_2034900375_110853300272'
+    def get(self, request):
+        req = top.api.TbkSpreadGetRequest()
+        req.set_app_info(top.appinfo(self.appkey, self.secret))
+        url = request.GET.get('url', '')
+        req.requests = [url]
         try:
             resp = req.getResponse()
             print(resp)
