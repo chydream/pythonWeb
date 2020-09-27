@@ -21,5 +21,6 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^shares/', include('shares.urls', namespace='shares')),
-    url(r'^tbk/', include('taobaoke.urls', namespace='tbk'))
+    url(r'^tbk/', include('taobaoke.urls', namespace='tbk')),
+    url(r'^account/', include('accounts.urls', namespace='account'))
 ]
