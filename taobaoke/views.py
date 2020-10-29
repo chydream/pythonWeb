@@ -77,7 +77,7 @@ class Tbk_material_search(View):
             resp = req.getResponse()
             # print(resp)
         except Exception as e:
-            resp = []
+            resp = {}
             print(e)
         return JsonResponse(resp, safe=False)
 
@@ -91,11 +91,13 @@ class Tbk_material_optimus(View):
     def get(self, request):
         req = top.api.TbkDgOptimusMaterialRequest()
         req.set_app_info(top.appinfo(self.appkey, self.secret))
-
-        req.page_size = 20
+        limit = request.GET.get('limit', 20)
+        page = request.GET.get('page', 1)
+        material_id = request.GET.get('material_id', 4092)
+        req.page_size = limit
         req.adzone_id = 110853300272
-        req.page_no = 1
-        req.material_id = 4092
+        req.page_no = page
+        req.material_id = material_id
         # req.device_value = "xxx"
         # req.device_encrypt = "MD5"
         # req.device_type = "IMEI"
@@ -107,7 +109,7 @@ class Tbk_material_optimus(View):
             resp = req.getResponse()
             # print(resp)
         except Exception as e:
-            resp = []
+            resp = {}
             print(e)
         return JsonResponse(resp, safe=False)
 
