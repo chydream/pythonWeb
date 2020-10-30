@@ -109,7 +109,7 @@ class Tbk_material_optimus(View):
             resp = req.getResponse()
             # print(resp)
         except Exception as e:
-            resp = {}
+            resp = []
             print(e)
         return JsonResponse(resp, safe=False)
 
