@@ -36,10 +36,14 @@ class Tbk_material_search(View):
     def get(self, request):
         req = top.api.TbkDgMaterialOptionalRequest()
         req.set_app_info(top.appinfo(self.appkey, self.secret))
-        req.start_dsr = 10
-        req.page_size = 20
-        req.page_no = 1
+        limit = request.GET.get('limit', 20)
+        page = request.GET.get('page', 1)
+        keyword = request.GET.get('keyword', "")
+        req.page_size = limit
+        req.page_no = page
+        req.q = keyword
         req.platform = 1
+        req.start_dsr = 10
         # req.end_tk_rate = 1234
         # req.start_tk_rate = 1234
         req.end_price = 10
@@ -49,8 +53,7 @@ class Tbk_material_search(View):
         # req.sort = "tk_rate_des"
         # req.itemloc = "杭州"
         # req.cat = "16,18"
-        req.q = "女装"
-        # req.material_id = 2836
+        # req.material_id = 3756
         # req.has_coupon = False
         # req.ip = "13.2.33.4"
         req.adzone_id = 110853300272
